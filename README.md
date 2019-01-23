@@ -2,6 +2,7 @@
 GRBL for STM32 controller.
 
 ## Development Environment
+|                      |                           |
 |----------------------|---------------------------|
 | **IDE**              | TrueSTUDIO for STM32 v9.0 |
 | **Controller board** | STM32F103C8T6 (Bluepill)  |
