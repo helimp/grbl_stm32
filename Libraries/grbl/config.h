@@ -43,7 +43,9 @@
 #define CPU_MAP_ATMEGA328P // Arduino Uno CPU
 #endif
 #ifdef STM32F103C8
-#define CPU_MAP_STM32F103
+//#define CPU_MAP_STM32F103
+#define CPU_MAP_STM32F103_CAM_V4_b01
+#define USART1_B67 // USART1 on PortB Pin6,7 for CAM-V4-b01 board
 #endif
 
 // Serial baud rate

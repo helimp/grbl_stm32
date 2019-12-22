@@ -55,16 +55,42 @@ void USART1_Configuration(u32 BaudRate)
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  
 
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; 
-	NVIC_Init(&NVIC_InitStructure);                 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+	NVIC_Init(&NVIC_InitStructure);
 
+#ifdef USART1_B67
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
+#else
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+#endif
+
+	// Configuring TX
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+#ifdef USART1_B67
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+#else
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+#endif
+
+	// Configuring RX
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+#ifdef USART1_B67
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+#else
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;	
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+#endif
+
+	/**
+	  * @brief Enable the remapping of USART1 alternate function TX and RX.
+	  * @note  ENABLE: Remap     (TX/PB6, RX/PB7)
+	  * @retval None
+	  */
+	#define __HAL_AFIO_REMAP_USART1_ENABLE()  SET_BIT(AFIO->MAPR, AFIO_MAPR_USART1_REMAP)
+	__HAL_AFIO_REMAP_USART1_ENABLE();
 
 	USART_InitStructure.USART_BaudRate = BaudRate;	  
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b; 
